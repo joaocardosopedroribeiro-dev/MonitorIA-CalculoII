@@ -1,105 +1,54 @@
-# MonitorIA — Assistente Inteligente para Monitoria de Cálculo II
+# MonitorIA — Cálculo II (versão Cloud 0.2)
 
-**MVP 0.1 • Projeto autoral de portfólio de João Pedro Cardoso Ribeiro**
+Protótipo pessoal para portfólio na trilha **AI Builder**, criado para demonstrar aplicação prática de IA e análise de dados em monitoria acadêmica. Não é um produto do iFood nem da UFSJ.
 
-Protótipo para consultar materiais de estudo, responder perguntas com referência aos documentos, classificar os assuntos mais procurados e gerar indicadores de uso. Pensado como demonstração de competências para a trilha **AI Builder** do iFood, mas **não é um produto do iFood** nem um serviço oficial da UFSJ.
+## O que já funciona
 
-## Funcionalidades já implementadas
+- Consulta aos quatro documentos **autorais de demonstração** incluídos em `materiais/`.
+- Busca TF-IDF lexical por trechos em PDFs (com texto), TXT e Markdown.
+- Chat em modo gratuito de consulta documental, **sem IA generativa**.
+- **Opcional:** ao inserir sua própria chave OpenAI no campo lateral do app, gera explicações via API usando os documentos encontrados (a API pode cobrar por uso). Não coloque a chave no GitHub.
+- Envio de materiais para a sessão atual, sem gravá-los em disco.
+- Classificação de dúvidas, gráficos, exportação de CSV para Power BI e geração de relatório Markdown, sempre **somente para a sessão atual**.
+- Indicadores sintéticos separados e claramente identificados como fictícios.
 
-- Carrega materiais próprios em `.pdf` (com texto extraível), `.txt` ou `.md`.
-- Recupera passagens relacionadas à pergunta por meio de TF-IDF lexical local.
-- Com chave de API, a IA generativa elabora respostas usando os trechos recuperados e identifica as fontes.
-- Sem chave, há **modo demonstração**, com exibição dos trechos encontrados; **não** há geração de respostas por IA.
-- Registra somente **data, assunto, modo e quantidade de fontes**; não guarda textos das perguntas nem identidade de estudantes.
-- Mostra gráficos de temas mais frequentes, exporta CSV compatível com Power BI e cria relatório em Markdown.
-- Script separado permite **gerar relatório periodicamente** por agendamento externo.
+## Publicar sem instalar Python no Windows
 
-## Como executar (Windows, macOS ou Linux)
+1. Crie uma conta em https://github.com e abra https://github.com/new.
+2. Crie um repositório **Public**, chamado `MonitorIA-CalculoII`; não adicione README ou licença automáticos.
+3. Extraia `MonitorIA_Cloud_v0.2.zip` no Windows. Abra a pasta extraída, **selecione os arquivos e as duas pastas internas** (`materiais`, `dados_exemplo`, `tests`) e arraste para a página de upload do repositório: **Add file → Upload files**. Não envie apenas o ZIP.
+4. Confirme que `app.py`, `core.py`, `requirements.txt`, `storage.py` e `README.md` aparecem **na raiz** do repositório. Confirme também as pastas `materiais/` e `dados_exemplo/`.
+5. Clique em **Commit changes** no GitHub.
+6. Abra https://share.streamlit.io, entre com seu GitHub e autorize o acesso aos repositórios públicos.
+7. Clique **Create app** → **Yup, I have an app**. Selecione o repositório `MonitorIA-CalculoII`, branch `main` e **Main file path** `app.py`. Se solicitado, aceite a versão padrão de Python 3.12.
+8. Clique **Deploy**. O Streamlit instala as dependências do `requirements.txt` automaticamente na nuvem. Ao terminar, você terá um endereço `https://...streamlit.app`.
+9. Abra o app, clique em **Assistente** e pergunte `Como funciona a integração por partes?`. Depois abra **Indicadores**.
 
-1. Instale **Python 3.10 ou superior**.
-2. Extraia o ZIP, abra o terminal na pasta `MonitorIA_CalculoII`.
-3. Crie um ambiente virtual e instale as bibliotecas:
+## Segurança e limites da versão em nuvem
 
-```bash
-python -m venv .venv
-# Windows PowerShell:
-.venv\Scripts\Activate.ps1
-# macOS/Linux:
-# source .venv/bin/activate
-pip install -r requirements.txt
-```
+- Não publique nem envie dados pessoais, documentos sigilosos, avaliações restritas ou dados reais dos estudantes.
+- **Nunca** envie chaves de API, `.env` ou `secrets.toml` para o repositório.
+- Para evitar cobranças involuntárias quando o link é público, a aplicação **não possui uma chave global**. IA generativa só é acionada se o próprio visitante inserir uma chave na sessão.
+- A versão publicada não grava arquivos nem indicadores em disco. Os dados são temporários e isolados por sessão; não representam um dashboard institucional ou uma automação de agendamento.
+- O arquivo `requirements.txt` tem todas as bibliotecas necessárias; não é preciso executar `pip install` no Windows.
+- Integração Power BI é **exportação CSV**, não um conector Power BI ativo. Integração n8n é uma ideia futura.
 
-4. (Opcional) Copie `.env.example` para `.env` e preencha a `OPENAI_API_KEY` obtida na sua conta da API. **A API pode ter custos separados do plano ChatGPT.** Mantenha a chave em segredo. Se não tiver chave, pule essa etapa.
-5. Execute:
+## Arquivos
 
-```bash
-streamlit run app.py
-```
+- `app.py` interface web (Streamlit), dados de sessão, visualização.
+- `core.py` leitura de documentos, busca local, classificação e integração opcional à API.
+- `storage.py` cálculo e exportação de indicadores.
+- `materiais/` conteúdo didático demonstrativo e original.
+- `dados_exemplo/` métricas sintéticas para demonstração.
+- `tests/` testes unitários do núcleo.
+- `requirements.txt` dependências Python gerenciadas automaticamente pelo Community Cloud.
 
-6. Abra o endereço local indicado no terminal, normalmente `http://localhost:8501`.
-
-> Dica: em alguns computadores use `py -m streamlit run app.py` ou `python -m streamlit run app.py` se o comando `streamlit` não for reconhecido.
-
-## Roteiro de demonstração em 3 minutos
-
-1. Abra **Materiais**: há quatro documentos demonstrativos **originais e fictícios quanto à origem institucional**; não representam apostilas oficiais da UFSJ.
-2. Em **Assistente**, pergunte: `Como funciona integração por partes?`.
-3. Veja o trecho consultado; se a API estiver configurada, veja a resposta gerada pela IA.
-4. Pergunte `Como calcular uma integral dupla?` e `Como identificar convergência de séries?`.
-5. Abra **Indicadores**, veja o ranking, baixe CSV para Power BI e o relatório Markdown.
-6. Em **Exemplo de indicadores fictícios**, veja números pré-gerados **claramente identificados como simulados**. Nunca apresente esses números como resultados de uso real.
-
-## Como gerar relatórios por automação
-
-Depois de algumas perguntas, rode na pasta raiz:
-
-```bash
-python scripts/gerar_relatorio.py
-```
-
-Isso cria `exports/relatorio_AAAA-MM-DD.md` e `exports/monitoria_indicadores.csv`. Para automação periódica, pode-se agendar o comando pelo Agendador de Tarefas (Windows), cron (Linux/macOS) ou integrar um gatilho no n8n em uma próxima versão. **Não existe um agendamento ativo nesta versão.**
-
-## Arquitetura
-
-```mermaid
-flowchart LR
-  A[Documento PDF TXT MD] --> B[Extração e divisão em trechos]
-  B --> C[Busca lexical TF-IDF]
-  D[Pergunta do estudante] --> C
-  C --> E{Chave de API configurada?}
-  E -->|Sim| F[Resposta com IA e fontes]
-  E -->|Não| G[Exibir trecho recuperado]
-  D --> H[Classificação da dúvida]
-  H --> I[(SQLite - métricas anônimas)]
-  I --> J[Gráfico e CSV Power BI]
-  I --> K[Relatório Markdown]
-```
-
-Arquivos principais:
-
-- `app.py`: interface Streamlit e execução do fluxo.
-- `core.py`: leitura dos materiais, indexação, busca, classificação e chamada de IA.
-- `storage.py`: armazenamento de indicadores, exportação e relatório.
-- `scripts/gerar_relatorio.py`: geração de relatórios via comando.
-- `tests/test_core.py`: testes automatizados.
-
-## Testes
+## Teste local (opcional)
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-## Cuidados, limitações e próximas etapas
+## Apresentação no portfólio
 
-- **Segurança:** protótipo local para demonstração. Sem autenticação, controle de usuários ou proteção adicional de arquivos. Não envie dados de estudantes, documentos privados, provas restritas nem dados pessoais.
-- Com IA ligada, pergunta e trechos selecionados são enviados à API. Verifique consentimentos e políticas de dados antes de qualquer uso real.
-- A busca é **lexical**, não semântica; sinônimos e notação matemática podem ter recuperação limitada.
-- A qualidade pedagógica depende dos materiais. Revise cálculos e explicações; o assistente não substitui o monitor ou docente.
-- O registro é anônimo em relação à identidade, mas a infraestrutura local ainda precisa ser protegida.
-- Melhorias previstas: busca por embeddings, testes de perguntas/respostas, ferramenta n8n para disparos de relatórios, instalação online segura, interface de feedback e autenticação.
-
-## Como apresentar no currículo (quando você testar e dominar a versão)
-
-> **Projeto pessoal — MonitorIA (protótipo)**: desenvolvimento de assistente acadêmico com busca de informações em documentos e respostas com IA generativa (via API), classificação de dúvidas e painel de indicadores, com exportação CSV e relatórios automatizáveis. Tecnologias: Python, Streamlit, SQLite, OpenAI API (se ativada) e Power BI (após realizar a integração).
-
-Adapte o texto à sua experiência real. Não declare uso de API, integração Power BI ou automação agendada antes de executá-los.
+**MonitorIA — protótipo pessoal de assistente para Cálculo II:** aplicação web em Python e Streamlit com pesquisa lexical em documentos, resposta generativa opcional com API própria, classificação de dúvidas, painel de indicadores e exportação CSV. Aplicativo demonstrativo sem uso oficial em produção.

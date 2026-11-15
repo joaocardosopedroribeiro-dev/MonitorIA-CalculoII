@@ -172,7 +172,7 @@ def offline_answer(matches: list[Match]) -> str:
     return ("**Modo demonstração — consulta a documentos, sem IA generativa.**\n\n"
             f"Encontrei este trecho em **{best.source}**:\n\n> "
             + best.text.replace("\n", "\n> ")
-            + "\n\nPara receber uma explicação elaborada pela IA, configure `OPENAI_API_KEY` no arquivo `.env`.")
+            + "\n\nPara receber uma explicação elaborada pela IA, informe sua própria chave de API no campo lateral do aplicativo.")
 
 
 def generated_answer(question: str, matches: list[Match], *, api_key: str, model: str) -> str:
